@@ -12,6 +12,7 @@ class _SignupPageState extends State<SignupPage> {
   final _idController = TextEditingController();
   final _nameController = TextEditingController();
   final _pwController = TextEditingController();
+  String? selectedPreference; // 성향 선택 변수 (아직 api 구성 x)
 
   Future<void> _signup() async {
     final id = _idController.text;
@@ -39,56 +40,140 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("회원가입")),
+      backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                controller: _idController,
-                decoration: InputDecoration(labelText: '아이디'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '아이디를 입력해주세요.';
-                  }
-                  return null;
-                },
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: 30),
+            Center(
+              child: Text(
+                '회원가입',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: '이름'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '이름을 입력해주세요.';
-                  }
-                  return null;
-                },
+            ),
+            SizedBox(height: 40),
+            // Name Field
+            TextFormField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                hintText: '이름',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
               ),
-              TextFormField(
-                controller: _pwController,
-                decoration: InputDecoration(labelText: '비밀번호'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '비밀번호를 입력해주세요.';
-                  }
-                  return null;
-                },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '이름을 입력해주세요.';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 16),
+            // ID Field
+            TextFormField(
+              controller: _idController,
+              decoration: InputDecoration(
+                hintText: '아이디',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    _signup();
-                  }
-                },
-                child: Text('회원가입'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '아이디를 입력해주세요.';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 16),
+            // Password Field
+            TextFormField(
+              controller: _pwController,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: '비밀번호',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
+                suffixIcon: Icon(Icons.visibility_off),
               ),
-            ],
-          ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '비밀번호를 입력해주세요.';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              hint: Text('본인의 성향을 선택해 주세요'),
+              value: selectedPreference,
+              items: ['안정형', '밸런스형', '도전형'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  selectedPreference = newValue;
+                });
+              },
+              validator: (value) {
+                if (value == null) {
+                  return '성향을 선택해 주세요';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 24),
+            // Sign Up Button
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  _signup();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black, // 검은색 배경
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: Text(
+                '회원가입',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

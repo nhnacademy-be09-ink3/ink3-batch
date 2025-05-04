@@ -1,0 +1,10 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+### 웰컴 쿠폰 발송 테스트 요청
+POST http://localhost:8080/send-coupon
+Content-Type: application/x-www-form-urlencoded
+
+userId=1

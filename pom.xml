@@ -59,6 +59,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.3.2</version> <!-- 또는 최신 안정 버전 -->
+        </dependency>
+
 
         <dependency>
             <groupId>com.h2database</groupId>

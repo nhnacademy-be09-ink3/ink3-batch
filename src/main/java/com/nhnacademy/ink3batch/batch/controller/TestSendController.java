@@ -1,4 +1,4 @@
-package com.nhnacademy.ink3batch.batch.test;
+package com.nhnacademy.ink3batch.batch.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nhnacademy.ink3batch.batch.scheduler.BirthdayCouponScheduler;
@@ -17,7 +17,7 @@ public class TestSendController {
     @PostMapping("/issue-birthday-coupons")
     public ResponseEntity<Void> triggerBirthdayCouponIssue() throws JsonProcessingException {
 
-        birthdayCouponScheduler.execute();
+//        birthdayCouponScheduler.execute();
         return ResponseEntity.ok().build();
     }
 }

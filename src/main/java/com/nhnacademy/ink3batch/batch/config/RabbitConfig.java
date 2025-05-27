@@ -23,19 +23,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String QUEUE_NAME = "coupon.queue";
     public static final String EXCHANGE_NAME = "coupon.exchange";
-    public static final String ROUTING_KEY = "coupon.routing";
 
     /*
      coupon을 담을 queue 생성
      durable = true : 서버를 재시작해도 큐가 (영구적으로) 지속됨
      message는 이 큐에 쌓이고, 이후 @RabbitListener에서 소비됨.
     */
-    @Bean
-    public Queue testQueue() {
-        return new Queue(QUEUE_NAME, true); // durable
-    }
 
     @Bean
     public Queue welcomeQueue() {
@@ -43,19 +37,10 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Queue birthdayQueue() {
-        return new Queue("coupon.birthday", true);
-    }
+    public Queue birthdayQueue() {return new Queue("coupon.birthday", true); }
 
     @Bean
-    public Queue bookQueue() {
-        return new Queue("coupon.book", true);
-    }
-
-    @Bean
-    public Queue categoryQueue() {
-        return new Queue("coupon.category", true);
-    }
+    public Queue birthdayQueueDead(){ return new Queue("coupon.birthday.dead", true); }
 
     /*
      message를 어디로 보낼지 라우팅해주는 교환기 생성
@@ -73,11 +58,6 @@ public class RabbitConfig {
      이걸 해줘야 message가 queue로 들어가게 됨
     */
     @Bean
-    public Binding binding(Queue testQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(testQueue).to(exchange).with(ROUTING_KEY);
-    }
-
-    @Bean
     public Binding bindWelcomeQueue() {
         return BindingBuilder.bind(welcomeQueue()).to(exchange()).with("coupon.issue.welcome");
     }
@@ -85,16 +65,6 @@ public class RabbitConfig {
     @Bean
     public Binding bindBirthdayQueue() {
         return BindingBuilder.bind(birthdayQueue()).to(exchange()).with("coupon.birthday.bulk");
-    }
-
-    @Bean
-    public Binding bindBookQueue() {
-        return BindingBuilder.bind(bookQueue()).to(exchange()).with("coupon.issue.book");
-    }
-
-    @Bean
-    public Binding bindCategoryQueue() {
-        return BindingBuilder.bind(categoryQueue()).to(exchange()).with("coupon.category");
     }
 
     /*

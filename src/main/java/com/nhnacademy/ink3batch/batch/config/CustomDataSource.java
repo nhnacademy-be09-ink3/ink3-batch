@@ -9,15 +9,14 @@ import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class CustomDataSource {
-
     @Bean
     @Primary
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://s4.java21.net:13306/project_be9_team3_batch_dev?serverTimezone=Asia/Seoul");
+        dataSource.setUsername("project_be9_team3");
+        dataSource.setPassword("-/jvCmf5WlFZF!U_");
         return dataSource;
     }
 
@@ -30,5 +29,4 @@ public class CustomDataSource {
         dataSource.setPassword("-/jvCmf5WlFZF!U_");
         return dataSource;
     }
-
 }

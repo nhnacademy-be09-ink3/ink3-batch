@@ -2,6 +2,7 @@ package com.nhnacademy.ink3batch.batch.mq.produce;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.ink3batch.batch.message.BirthdayBulkMessage;
 import com.nhnacademy.ink3batch.batch.message.BirthdayCouponMessage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class BirthdayCouponProducer {
         });
     }
 
-    public void send(BirthdayCouponMessage message) throws JsonProcessingException {
+    public void send(BirthdayBulkMessage message) throws JsonProcessingException {
         try {
             // spring 기본으로 제공하는 역/직렬화 제거하고 header 다시 작성
             // ㄴ이거 때문에 consumer에서 역직렬화가 안됨

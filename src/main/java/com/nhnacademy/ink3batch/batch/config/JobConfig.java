@@ -1,5 +1,6 @@
 package com.nhnacademy.ink3batch.batch.config;
 
+import com.nhnacademy.ink3batch.batch.service.JdbcQueryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -15,6 +16,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @RequiredArgsConstructor
 public class JobConfig {
+
+    final JdbcQueryService jdbcQueryService;
+
     @Bean
     public Job helloWorldJob(JobRepository jobRepository, Step helloWorldStep) {
         return new JobBuilder("helloWorldJob", jobRepository)
@@ -26,6 +30,7 @@ public class JobConfig {
     public Step helloWorldStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("helloWorldStep", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
+                    jdbcQueryService.printUsersBornInMay();
                     System.out.println("Hello World");
                     return RepeatStatus.FINISHED;
                 }, transactionManager)

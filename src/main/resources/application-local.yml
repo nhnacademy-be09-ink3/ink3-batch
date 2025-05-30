@@ -1,0 +1,7 @@
+spring:
+  rabbitmq:
+    host: s4.java21.net
+    port: 5672
+    username: admin
+    password: nhnacademy123!
+    virtual-host: ink_local

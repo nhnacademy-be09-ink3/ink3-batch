@@ -3,9 +3,9 @@ package com.nhnacademy.ink3batch.batch.config;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,12 +34,24 @@ public class RabbitConfig {
 
     @Bean
     public Queue welcomeQueue() {
-        return new Queue("coupon.welcome", true);
+        return QueueBuilder.durable("coupon.welcome")
+                .withArgument("x-dead-letter-exchange", "dlx.exchange")
+                .withArgument("x-dead-letter-routing-key", "dlx.coupon.welcome")
+                .build();
     }
 
     @Bean
-    public Queue birthdayQueue() {return new Queue("coupon.birthday", true); }
+    public Queue welcomeQueueDead() {
+        return new Queue("coupon.welcome.dead", true);
+    }
 
+    @Bean
+    public Queue birthdayQueue() {
+        return QueueBuilder.durable("coupon.birthday")
+                .withArgument("x-dead-letter-exchange", "dlx.exchange")
+                .withArgument("x-dead-letter-routing-key","dlx.coupon.birthday")
+                .build();
+    }
     @Bean
     public Queue birthdayQueueDead(){ return new Queue("coupon.birthday.dead", true); }
 
@@ -53,19 +65,35 @@ public class RabbitConfig {
         return new TopicExchange(EXCHANGE_NAME);
     }
 
+    @Bean
+    public TopicExchange dlxExchange() {
+        return new TopicExchange("dlx.exchange");
+    }
     /*
      특정 Routing key를 통해 message를 Exchange -> Queue로 연결
      즉, "coupon.routing" 키를 가진 message가 오면 coupon.queue로 전달
      이걸 해줘야 message가 queue로 들어가게 됨
     */
+
+
     @Bean
     public Binding bindWelcomeQueue() {
-        return BindingBuilder.bind(welcomeQueue()).to(exchange()).with("coupon.issue.welcome");
+        return BindingBuilder.bind(welcomeQueue()).to(exchange()).with("coupon.welcome");
+    }
+
+    @Bean
+    public Binding bindWelcomeDLQ() {
+        return BindingBuilder.bind(welcomeQueueDead()).to(dlxExchange()).with("dlx.coupon.welcome");
     }
 
     @Bean
     public Binding bindBirthdayQueue() {
-        return BindingBuilder.bind(birthdayQueue()).to(exchange()).with("coupon.birthday.bulk");
+        return BindingBuilder.bind(birthdayQueue()).to(exchange()).with("coupon.birthday");
+    }
+
+    @Bean
+    public Binding bindBirthdayDLQ() {
+        return BindingBuilder.bind(birthdayQueueDead()).to(dlxExchange()).with("dlx.coupon.birthday");
     }
 
     /*

@@ -3,7 +3,7 @@ package com.nhnacademy.ink3batch.batch.scheduler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nhnacademy.ink3batch.batch.message.BirthdayCouponMessage;
 import com.nhnacademy.ink3batch.batch.mq.BirthdayCouponProducer;
-import com.nhnacademy.ink3batch.batch.service.JdbcQueryService;
+import com.nhnacademy.ink3batch.batch.scheduler.JdbcQueryService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ public class BirthdayCouponScheduler {
 
 
     // userId를 100개 단위로 끊어서 전송
-    //@Scheduled(cron = "0 0 0 L * ?")// 매일 자정 실행
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(cron = "0 0 0 L * ?")// 매일 자정 실행
+//    @Scheduled(fixedRate = 5000)
     @Transactional
     public void sendBirthdayCouponsInChunks() {
 

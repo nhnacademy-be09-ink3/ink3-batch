@@ -5,3 +5,4 @@ spring:
     username: admin
     password: nhnacademy123!
     virtual-host: ink_local
+    dynamic: false

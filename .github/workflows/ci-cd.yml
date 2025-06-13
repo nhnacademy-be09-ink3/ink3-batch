@@ -134,5 +134,10 @@ jobs:
            chmod +x deploy.sh
            export EUREKA_USER_NAME=${{ secrets.EUREKA_USER_NAME }}
            export EUREKA_USER_PASSWORD=${{ secrets.EUREKA_USER_PASSWORD }}
+           export RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }}
+           export RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }}
+           export RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}
+           export RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}
+           export RABBITMQ_VIRTUAL_HOST=${{ secrets.RABBITMQ_VIRTUAL_HOST_DEV }}
            nohup ./deploy.sh "${{ steps.extract_version.outputs.version }}" > deploy.log 2>&1 &
            exit 0

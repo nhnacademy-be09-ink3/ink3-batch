@@ -69,8 +69,9 @@ jobs:
             --spring.profiles.active=test \
             > app.log 2>&1 &
           echo $! > app.pid
+          
       - name: Wait for Eureka to start
-        run: sleep 15
+        run: sleep 30
 
       - name: Health check
         run: curl --fail http://localhost:8080/actuator/health

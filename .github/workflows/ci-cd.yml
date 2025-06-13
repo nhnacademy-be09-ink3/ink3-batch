@@ -18,9 +18,9 @@ jobs:
       - name: Extract version from POM
         id: extract_version
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | grep -Ev '(^\[|Download\w+:)' | tail -n 1)
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          
+
       - name: 추출된 버전 확인
         run: echo "${{ steps.extract_version.outputs.version }} 입니다."
 
@@ -58,7 +58,7 @@ jobs:
       - name: Extract version from POM
         id: extract_version
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | grep -Ev '(^\[|Download\w+:)' | tail -n 1)
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Package application

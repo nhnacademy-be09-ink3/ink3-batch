@@ -81,7 +81,6 @@ jobs:
         run: mvn test -B
 
       - name: Print logs on failure
-        if: failure()
         run: cat app.log
 
 #  deploy:

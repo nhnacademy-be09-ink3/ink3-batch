@@ -64,6 +64,8 @@ jobs:
       - name: Run Eureka in background
         run: |
           ls
+          cd target
+          ls
           nohup java -jar target/ink3-batch-${{ steps.extract_version.outputs.version }}-SNAPSHOT.jar \
             --spring.profiles.active=test \
             > app.log 2>&1 &

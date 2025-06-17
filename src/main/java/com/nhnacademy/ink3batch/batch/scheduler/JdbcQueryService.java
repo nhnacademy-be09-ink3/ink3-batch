@@ -61,31 +61,44 @@ public class JdbcQueryService {
 
     public int updateMemberRate() {
         String sql = """
-        UPDATE users u
-        JOIN (
-            SELECT
-                o.user_id,
-                SUM(p.payment_amount) AS total_amount
-            FROM orders o
-            JOIN payments p
-              ON o.id = p.order_id
-            WHERE p.approved_at
-              BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND CURDATE()
-            GROUP BY o.user_id
-        ) t
-          ON u.id = t.user_id
-        SET u.membership_id = CASE
-            WHEN t.total_amount >= 300000 THEN 4  -- 플레티넘
-            WHEN t.total_amount >= 200000 THEN 3  -- 골드
-            WHEN t.total_amount >= 100000 THEN 2  -- 로얄
-            ELSE 1                                -- 일반
-        END
-        WHERE u.membership_id <> CASE
-            WHEN t.total_amount >= 300000 THEN 4
-            WHEN t.total_amount >= 200000 THEN 3
-            WHEN t.total_amount >= 100000 THEN 2
-            ELSE 1
-        END
+                UPDATE users u
+                JOIN (
+                  SELECT
+                    o.user_id,
+                    SUM(p.payment_amount) AS total_amount
+                  FROM orders o
+                  JOIN payments p
+                    ON p.order_id = o.id
+                  WHERE o.status = 'DELIVERED'
+                    AND p.approved_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 MONTH) AND NOW()
+                  GROUP BY o.user_id
+                ) agg
+                  ON u.id = agg.user_id
+                JOIN (
+                  SELECT
+                    r.user_id,
+                    (
+                      SELECT m.id
+                      FROM memberships m
+                      WHERE m.condition_amount <= r.total_amount
+                      ORDER BY m.condition_amount DESC
+                      LIMIT 1
+                    ) AS target_membership_id
+                  FROM (
+                    SELECT
+                      o.user_id,
+                      SUM(p.payment_amount) AS total_amount
+                    FROM orders o
+                    JOIN payments p
+                      ON p.order_id = o.id
+                    WHERE o.status = 'DELIVERED'
+                      AND p.approved_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 MONTH) AND NOW()
+                    GROUP BY o.user_id
+                  ) r
+                ) t
+                  ON u.id = t.user_id
+                SET
+                  u.membership_id = COALESCE(t.target_membership_id, 1)
         """;
 
         try (Connection conn = mysqlDataSource.getConnection();

@@ -22,12 +22,12 @@ public class BirthdayCouponScheduler {
 
 
     // userId를 100개 단위로 끊어서 전송
-    @Scheduled(cron = "0 0 0 L * ?")// 매일 자정 실행
-//    @Scheduled(fixedRate = 5000)
+    @Scheduled(cron = "0 0 0 1 * ?")// 매월 1일 자정 실행
+    //@Scheduled(fixedRate = 5000)
     @Transactional
     public void sendBirthdayCouponsInChunks() {
 
-        int month = LocalDate.now().plusMonths(1).getMonthValue();
+        int month = LocalDate.now().getMonthValue();
         List<Long> userIds = jdbcQueryService.printUsersBornIn(month);
         System.out.println(userIds);
         int chunkSize = 100;
